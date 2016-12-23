@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -51,17 +52,27 @@ public class ContestAdapter extends ArrayAdapter<Contest> {
         Contest currentContest= getItem(position);
 
         // Find the TextView with ID status
-        TextView statusView=(TextView) listItemView.findViewById(R.id.status);
+       // TextView statusView=(TextView) listItemView.findViewById(R.id.status);
         // Display the status of the current contest in that TextView
-        statusView.setText(currentContest.getStatus());
+      //  statusView.setText(currentContest.getStatus());
+
+        // Find the ImageView with id image
+        ImageView statusView = (ImageView) listItemView.findViewById(R.id.image);
+
+        // Find the status of the contest
+        String status=currentContest.getStatus();
+        if(status.equals("RUNNING"))
+            statusView.setImageResource(R.drawable.running);
+        else
+        statusView.setImageResource(R.drawable.upcoming);
 
         // Set the proper background color on the status circle.
         // Fetch the background from the TextView, which is a GradientDrawable.
-        GradientDrawable statusCircle=(GradientDrawable)statusView.getBackground() ;
+      //  GradientDrawable statusCircle=(GradientDrawable)statusView.getBackground() ;
         //Get the appropriate background color based on the current contest status
-        int statusColor = getStatusColor(currentContest.getStatus());
+     //   int statusColor = getStatusColor(currentContest.getStatus());
         // Set the color on the status circle
-        statusCircle.setColor(statusColor);
+      //  statusCircle.setColor(statusColor);
 
         // Find the TextView with ID contest_name
         TextView nameView=(TextView) listItemView.findViewById(R.id.contest_name);
@@ -109,10 +120,7 @@ public class ContestAdapter extends ArrayAdapter<Contest> {
      */
     private int getStatusColor(String status){
         int statusColorResourceId;
-        if(status.equals("Ending"))
-            statusColorResourceId=R.color.finish;
-        else
-            statusColorResourceId=R.color.coming;
+        statusColorResourceId=R.color.coming;
         return ContextCompat.getColor(getContext(),statusColorResourceId);
     }
 }

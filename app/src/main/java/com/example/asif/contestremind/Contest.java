@@ -15,17 +15,21 @@ public class Contest {
     /** Time of the contest */
     private long mTimeInMillisecond;
 
+    /** Url of the contest */
+    private String mUrl;
+
     /**
      * Create a new {@link Contest}object.
      *
      * @param status is the Status of the contest that is finished or upcoming
      * @param name is the name of the contest
      * @param timeInMillisecond is the date of the contest
-     */
-    public Contest(String status,String name, long timeInMillisecond){
+     * @param url is the url of the contest     */
+    public Contest(String status,String name, long timeInMillisecond , String url){
         mStatus=status;
         mName=name;
         mTimeInMillisecond=timeInMillisecond;
+       mUrl=url;
     }
 
     /**
@@ -48,4 +52,12 @@ public class Contest {
     public long getTimeInMillisecond(){
         return mTimeInMillisecond;
     }
+
+    /**
+     * Returns the url of the contest
+     */
+    public  String getUrl(){
+        return mUrl;
+    }
+
 }
