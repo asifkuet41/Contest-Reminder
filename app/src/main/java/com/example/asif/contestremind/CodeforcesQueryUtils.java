@@ -17,15 +17,14 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.LockSupport;
 
 /**
  * Created by asif on 12/20/16.
  */
 
-public final class QueryUtils {
+public final class CodeforcesQueryUtils {
 
-    private static final String LOG_TAG = QueryUtils.class.getSimpleName();
+    private static final String LOG_TAG = CodeforcesQueryUtils.class.getSimpleName();
 
            public static   String SINGLE_CONTEST_URL ="http://codeforces.com/contest/";
             public static String ALL_CONTEST_URL = "http://codeforces.com/contests";
@@ -59,9 +58,9 @@ public final class QueryUtils {
     }
 
     /**
-     * This is a private constructor because no one should ever create a {@link QueryUtils} object
+     * This is a private constructor because no one should ever create a {@link CodeforcesQueryUtils} object
      */
-    private QueryUtils(){
+    private CodeforcesQueryUtils(){
 
     }
     /**
@@ -101,7 +100,7 @@ public final class QueryUtils {
                 JSONObject current = earthquakeArray.getJSONObject(i);
                String contestId = current.getString("id");
                 String location = current.getString("name");
-                long time = current.getLong("startTimeSeconds")*1000;
+                long time = current.getLong("startTimeSeconds");
                 String status=current.getString("phase");
                 if(status.equals("BEFORE"))
                 {
@@ -125,7 +124,7 @@ public final class QueryUtils {
 
         } catch (JSONException e){
 
-            Log.e("QueryUtils", "Problem parsing the contest JSON results",e);
+            Log.e("CodeforcesQueryUtils", "Problem parsing the contest JSON results",e);
         }
         return  contests;
     }

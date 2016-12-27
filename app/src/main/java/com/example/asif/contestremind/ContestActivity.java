@@ -22,11 +22,12 @@ public class ContestActivity extends AppCompatActivity implements LoaderCallback
     private static final String LOG_TAG = ContestActivity.class.getName();
 
     // Url of the contest list
-    private  static final String CONTEST_URL="http://codeforces.com/api/contest.list?gym=false";
+    private  static final String CONTEST_URL="https://toph.co/";
     // Adapter for the list of contest
     private ContestAdapter mAdapter;
 
     private static final int CONTEST_LOADER_ID = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

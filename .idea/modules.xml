@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ContestRemind.iml" filepath="$PROJECT_DIR$/ContestRemind.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Contest-Remind.iml" filepath="$PROJECT_DIR$/Contest-Remind.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

@@ -2,7 +2,15 @@ package com.example.asif.contestremind;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.util.Log;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,7 +33,15 @@ public class ContestLoader extends AsyncTaskLoader<List<Contest>> {
        if (mUrl == null){
            return null;
        }
-        List<Contest>contests = QueryUtils.fetchContestData(mUrl);
+        List<Contest>contests = new ArrayList<>();
+        if (mUrl.equals("https://toph.co/")){
+           TophQueryUtils tophQueryUtils= new TophQueryUtils();
+          contests = tophQueryUtils.asif();
+
+       }
+        else{
+           contests = CodeforcesQueryUtils.fetchContestData(mUrl);
+       }
         return contests;
     }
 }
