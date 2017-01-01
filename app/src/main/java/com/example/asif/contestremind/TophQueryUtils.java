@@ -18,7 +18,7 @@ import java.util.List;
 
 public class TophQueryUtils /*extends AsyncTask<Void,Void,List<Contest>>*/ {
 
-    public List<Contest> asif(){
+    public static  List<Contest> asif(){
         String url="";
         String finalUrl="https://toph.co";
         String name="";
@@ -59,7 +59,7 @@ public class TophQueryUtils /*extends AsyncTask<Void,Void,List<Contest>>*/ {
             }
 
             for(int i=0;i<id;i++){
-                Contest contest =  new Contest("upcoming",names[i],Long.parseLong(times[i]),urls[i]);
+                Contest contest =  new Contest("upcoming",names[i],Long.parseLong(times[i])*1000,urls[i]);
                 contests.add(contest);
             }
 

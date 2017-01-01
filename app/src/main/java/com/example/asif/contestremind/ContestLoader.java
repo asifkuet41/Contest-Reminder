@@ -26,22 +26,26 @@ public class ContestLoader extends AsyncTaskLoader<List<Contest>> {
         mUrl=url;
     }
     protected void onStartLoading(){
+
         forceLoad();
     }
     @Override
     public List<Contest> loadInBackground() {
+
        if (mUrl == null){
            return null;
        }
         List<Contest>contests = new ArrayList<>();
-        if (mUrl.equals("https://toph.co/")){
-           TophQueryUtils tophQueryUtils= new TophQueryUtils();
-          contests = tophQueryUtils.asif();
+       if (mUrl.equals("https://toph.co/")){
+          contests = TophQueryUtils.asif();
 
        }
-        else{
-           contests = CodeforcesQueryUtils.fetchContestData(mUrl);
+        else if (mUrl.equals("https://www.codechef.com/")){
+           contests= CodechefQueryUtils. fetchContestData();
        }
+        else
+           contests = CodeforcesQueryUtils.fetchContestData(mUrl);
+
         return contests;
     }
 }

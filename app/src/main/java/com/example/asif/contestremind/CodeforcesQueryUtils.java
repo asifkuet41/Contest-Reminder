@@ -116,7 +116,7 @@ public final class CodeforcesQueryUtils {
                 }
                 String finalUrl = url.toString();
 
-                Contest contest =new Contest(finalStatus,location,time,finalUrl);
+                Contest contest =new Contest(finalStatus,location,time*1000+ 1800000,finalUrl);
                 contests.add(contest);
 
             }

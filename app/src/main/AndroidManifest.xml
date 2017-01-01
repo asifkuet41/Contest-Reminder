@@ -3,6 +3,7 @@
     package="com.example.asif.contestremind">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -10,14 +11,14 @@
         android:label="Contest Reminder"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ContestActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".ContestActivity"></activity>
     </application>
 
 </manifest>

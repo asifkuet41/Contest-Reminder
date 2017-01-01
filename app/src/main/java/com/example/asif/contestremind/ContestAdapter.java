@@ -71,7 +71,7 @@ public class ContestAdapter extends ArrayAdapter<Contest> {
         nameView.setText(currentContest.getName());
 
         // Create a new Date object from the time in millisecond of the contest
-        Date dateObject = new Date(currentContest.getTimeInMillisecond()*1000);
+        Date dateObject = new Date(currentContest.getTimeInMillisecond());
         // Find the TextView with ID date
         TextView dateView=(TextView) listItemView.findViewById(R.id.date);
 
