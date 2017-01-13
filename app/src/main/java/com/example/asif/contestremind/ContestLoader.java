@@ -37,11 +37,17 @@ public class ContestLoader extends AsyncTaskLoader<List<Contest>> {
        }
         List<Contest>contests = new ArrayList<>();
        if (mUrl.equals("https://toph.co/")){
-          contests = TophQueryUtils.asif();
+          contests = TophQueryUtils.fetchContestData();
 
        }
         else if (mUrl.equals("https://www.codechef.com/")){
            contests= CodechefQueryUtils. fetchContestData();
+       }
+       else if(mUrl.equals("http://www.devskill.com/Home")){
+           contests=DevSkillQueryUtils.fetchContestData();
+       }
+       else if(mUrl.equals("https://atcoder.jp/contest")){
+           contests = AtCoderQueryUtils.fetchContestData();
        }
         else
            contests = CodeforcesQueryUtils.fetchContestData(mUrl);

@@ -1,6 +1,8 @@
 package com.example.asif.contestremind;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,13 +15,16 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.codeforces,
             R.drawable.codechef,
             R.drawable.toph,
-            R.drawable.hackerrank,
-           R.drawable.devskill
+            R.drawable.devskill,
+            R.drawable.logo2
+
     };
     private String [] contestUrl={
             "http://codeforces.com/api/contest.list?gym=false",
             "https://www.codechef.com/",
-            "https://toph.co/"
+            "https://toph.co/",
+            "http://www.devskill.com/Home",
+            "https://atcoder.jp/contest"
 
     };
     // Adapter for the list of contest site
@@ -37,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         contest_site_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+
 
                 // Create a new intent to pass the contest site to ContestActivity
                 Intent intent = new Intent(MainActivity.this,ContestActivity.class);

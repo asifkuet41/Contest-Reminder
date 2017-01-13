@@ -32,6 +32,8 @@ public class Contest {
        mUrl=url;
     }
 
+
+
     /**
      * Returns the status of the contest.
      */

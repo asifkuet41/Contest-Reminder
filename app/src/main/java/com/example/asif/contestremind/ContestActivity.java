@@ -1,23 +1,30 @@
 package com.example.asif.contestremind;
 
+import android.app.AlarmManager;
 import android.app.LoaderManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.content.AsyncTaskLoader;
 //import android.os.AsyncTask;
+import android.provider.CalendarContract;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.widget.TextView;
@@ -25,6 +32,7 @@ import android.widget.TextView;
 public class ContestActivity extends AppCompatActivity implements LoaderCallbacks<List<Contest>> {
 
     private static final String LOG_TAG = ContestActivity.class.getName();
+    private static List<String> DONE_ALARM =   new ArrayList<String>();
 
     // Url of the contest list
     public   String CONTEST_URL;
@@ -49,7 +57,6 @@ public class ContestActivity extends AppCompatActivity implements LoaderCallback
         ListView contestListView = (ListView) findViewById(R.id.list);
         mEmptyStateTextView = (TextView)findViewById(R.id.empty_view);
         contestListView.setEmptyView(mEmptyStateTextView);
-
         // Create a new Adapter that takes an empty list of contests as input.
         mAdapter = new ContestAdapter(this,new ArrayList<Contest>());
 
@@ -61,17 +68,125 @@ public class ContestActivity extends AppCompatActivity implements LoaderCallback
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
-                // Find the current contest that was clicked on
+                final int  itemPosition = position;
+
+                //Create a new Alert Dialog
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(ContestActivity.this);
+
+                // Set the dialog message
+                alertDialog.setMessage("Do you want to notification for this contest ?").setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // Find the current contest that was clicked on
+                                Contest currentContest = mAdapter.getItem(itemPosition);
+
+                                // Convert the String Url into URI object
+                                Uri contestUri = Uri.parse(currentContest.getUrl());
+
+                                // add the contest name into the DONE_ALARM list
+                                DONE_ALARM.add(currentContest.getName());
+
+                                // Create Calendar object.
+                                Calendar calendar= Calendar.getInstance();
+
+                                //Get the contest time from Contest Class
+                                calendar.setTimeInMillis(currentContest.getTimeInMillisecond());
+                                // Extract year from the time
+                                int year = calendar.get(Calendar.YEAR);
+                                // Extract month from the time
+                                int month = calendar.get(Calendar.MONTH);
+                                // Extract date from the time
+                                int  date =calendar.get(Calendar.DAY_OF_MONTH);
+                                // Extract hour from the time
+                                int  hour= calendar.get(Calendar.HOUR_OF_DAY);
+                                // Extract minute from the time
+                                int minute = calendar.get(Calendar.MINUTE);
+
+
+                                // Now we need to set the time for notification
+                                // Set year
+                                calendar.set(Calendar.YEAR,2017);
+                                // Set month
+                                calendar.set(Calendar.MONTH,0);
+                                // Set date
+                                calendar.set(Calendar.DAY_OF_MONTH,14);
+                                // Set hour before one hour of the contest
+                                int final_hour;
+                                if(hour==0)
+                                     final_hour=23;
+                                else
+                                final_hour=hour-1;
+                                calendar.set(Calendar.HOUR_OF_DAY,3);
+                                // Set minute
+                                calendar.set(Calendar.MINUTE,30);
+
+                                // Create a new Intent to view the AlertReceiver Class
+                                Intent intent = new Intent(getApplicationContext(),AlertReceiver.class);
+
+                                SharedPreferences preferences=getSharedPreferences("RequestCode",MODE_PRIVATE);
+                                int count = preferences.getInt("codeValue",0);
+
+                                String  notificationMessage ="";
+
+                                if (CONTEST_URL.equals("https://toph.co/")){
+                                    notificationMessage="You have a new contest at toph";
+
+                                }
+                                else if (CONTEST_URL.equals("https://www.codechef.com/")){
+                                    notificationMessage="You have a new contest at Codechef";
+                                }
+                                else if(CONTEST_URL.equals("http://www.devskill.com/Home")){
+                                    notificationMessage="You have a new contest at Devskill";
+                                }
+                                else if(CONTEST_URL.equals("https://atcoder.jp/contest")){
+                                    notificationMessage="You have a new contest at AtCoder";
+                                }
+                                else
+                                    notificationMessage="You have a new contest Codeforces";
+
+                                Bundle bundle = new Bundle();
+                                bundle.putString("ContestSite",notificationMessage);
+                                intent.putExtras(bundle);
+
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),count,intent,PendingIntent.FLAG_ONE_SHOT);
+                                AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+                                alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+                                preferences.edit().putInt("codeValue",count+1).commit();
+
+                               // Create a new intent to view the contest URI
+                                Intent websiteIntent = new Intent(Intent.ACTION_VIEW,contestUri);
+
+                                // Send the intent to launch a new activity
+                                startActivity(websiteIntent);
+
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                // Find the current contest that was clicked on
+                                Contest currentContest = mAdapter.getItem(itemPosition);
+
+                                // Convert the String Url into URI object
+                                Uri contestUri = Uri.parse(currentContest.getUrl());
+
+                                // Create a new intent to view the contest URI
+                                Intent websiteIntent = new Intent(Intent.ACTION_VIEW,contestUri);
+
+                                // Send the intent to launch a new activity
+                                startActivity(websiteIntent);
+                            }
+                        });
                 Contest currentContest = mAdapter.getItem(position);
+                Set<String> set = new HashSet<String>(DONE_ALARM);
+                if(currentContest.getStatus().equals("UPCOMING")||!set.contains(currentContest.getName())) {
+                    AlertDialog alert = alertDialog.create();
+                    alert.setTitle("Contest Reminder");
+                    alert.show();
+                }
 
-                // Convert the String Url into URI object
-                Uri contestUri = Uri.parse(currentContest.getUrl());
-
-                // Create a new intent to view the contest URI
-                Intent websiteIntent = new Intent(Intent.ACTION_VIEW,contestUri);
-
-                // Send the intent to launch a new activity
-                startActivity(websiteIntent);
             }
         });
 

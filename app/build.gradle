@@ -3,6 +3,9 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.1"
+    aaptOptions{
+        cruncherEnabled=false;
+    }
     defaultConfig {
         applicationId "com.example.asif.contestremind"
         minSdkVersion 15
