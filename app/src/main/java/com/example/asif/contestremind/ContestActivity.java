@@ -32,7 +32,6 @@ import android.widget.TextView;
 public class ContestActivity extends AppCompatActivity implements LoaderCallbacks<List<Contest>> {
 
     private static final String LOG_TAG = ContestActivity.class.getName();
-    private static List<String> DONE_ALARM =   new ArrayList<String>();
 
     // Url of the contest list
     public   String CONTEST_URL;
@@ -85,7 +84,9 @@ public class ContestActivity extends AppCompatActivity implements LoaderCallback
                                 Uri contestUri = Uri.parse(currentContest.getUrl());
 
                                 // add the contest name into the DONE_ALARM list
-                                DONE_ALARM.add(currentContest.getName());
+                                SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                                editor.putInt(currentContest.getName(),1);
+                                editor.commit();
 
                                 // Create Calendar object.
                                 Calendar calendar= Calendar.getInstance();
@@ -110,22 +111,26 @@ public class ContestActivity extends AppCompatActivity implements LoaderCallback
                                 // Set month
                                 calendar.set(Calendar.MONTH,0);
                                 // Set date
-                                calendar.set(Calendar.DAY_OF_MONTH,14);
+                                calendar.set(Calendar.DAY_OF_MONTH,16);
                                 // Set hour before one hour of the contest
                                 int final_hour;
                                 if(hour==0)
                                      final_hour=23;
                                 else
                                 final_hour=hour-1;
-                                calendar.set(Calendar.HOUR_OF_DAY,3);
+                                calendar.set(Calendar.HOUR_OF_DAY,2);
                                 // Set minute
-                                calendar.set(Calendar.MINUTE,30);
+                                calendar.set(Calendar.MINUTE,37);
 
                                 // Create a new Intent to view the AlertReceiver Class
                                 Intent intent = new Intent(getApplicationContext(),AlertReceiver.class);
 
                                 SharedPreferences preferences=getSharedPreferences("RequestCode",MODE_PRIVATE);
                                 int count = preferences.getInt("codeValue",0);
+
+                                Bundle notiId = new Bundle();
+                                notiId.putInt("notification_id",count);
+                                intent.putExtras(notiId);
 
                                 String  notificationMessage ="";
 
@@ -180,11 +185,37 @@ public class ContestActivity extends AppCompatActivity implements LoaderCallback
                             }
                         });
                 Contest currentContest = mAdapter.getItem(position);
-                Set<String> set = new HashSet<String>(DONE_ALARM);
-                if(currentContest.getStatus().equals("UPCOMING")||!set.contains(currentContest.getName())) {
-                    AlertDialog alert = alertDialog.create();
-                    alert.setTitle("Contest Reminder");
-                    alert.show();
+
+                if(currentContest.getStatus().equals("UPCOMING")) {
+                    SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+                    int value = prefs.getInt(currentContest.getName(),0);
+                    if(value==0){
+                        AlertDialog alert = alertDialog.create();
+                        alert.setTitle("Contest Reminder");
+                        alert.show();
+                    }
+                    else{
+                        // Convert the String Url into URI object
+                        Uri contestUri = Uri.parse(currentContest.getUrl());
+
+                        // Create a new intent to view the contest URI
+                        Intent websiteIntent = new Intent(Intent.ACTION_VIEW,contestUri);
+
+                        // Send the intent to launch a new activity
+                        startActivity(websiteIntent);
+                    }
+
+                }
+                else{
+
+                    // Convert the String Url into URI object
+                    Uri contestUri = Uri.parse(currentContest.getUrl());
+
+                    // Create a new intent to view the contest URI
+                    Intent websiteIntent = new Intent(Intent.ACTION_VIEW,contestUri);
+
+                    // Send the intent to launch a new activity
+                    startActivity(websiteIntent);
                 }
 
             }
@@ -238,5 +269,6 @@ public class ContestActivity extends AppCompatActivity implements LoaderCallback
     public void onLoaderReset(Loader<List<Contest>> loader) {
         mAdapter.clear();
     }
+
 
 }
